@@ -10,16 +10,17 @@ use Illuminate\Contracts\Broadcasting\ShouldBroadcast;
 use Illuminate\Foundation\Events\Dispatchable;
 use Illuminate\Queue\SerializesModels;
 
-class UserEvent
+class InvoiceEvent implements ShouldBroadcast
 {
     use Dispatchable, InteractsWithSockets, SerializesModels;
 
     /**
      * Create a new event instance.
      */
-    public function __construct()
+    public function __construct(public $data)
     {
-        //
+        $this->dontBroadcastToCurrentUser();
+        $this->data = $data;
     }
 
     /**
@@ -30,12 +31,12 @@ class UserEvent
     public function broadcastOn(): array
     {
         return [
-            new Channel('user-channel'),
+            new Channel('invoice-channel'),
         ];
     }
 
     public function broadcastAs()
     {
-        return 'user-event';
+        return 'invoice-event';
     }
 }
