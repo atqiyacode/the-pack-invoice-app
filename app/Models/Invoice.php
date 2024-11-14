@@ -26,4 +26,13 @@ class Invoice extends Model
         'gst_amount',
         'grand_total',
     ];
+
+    /**
+     * Get all of the items for the Invoice
+     *
+     */
+    public function items(): \Illuminate\Database\Eloquent\Relations\HasMany
+    {
+        return $this->hasMany(InvoiceItem::class, 'invoice_id', 'id');
+    }
 }

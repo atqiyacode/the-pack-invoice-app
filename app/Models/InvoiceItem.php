@@ -16,9 +16,20 @@ class InvoiceItem extends Model
      * @var array<int, string>
      */
     protected $fillable = [
+        'invoice_id',
         'item_name',
         'item_price',
         'item_quantity',
         'item_amount',
     ];
+
+    /**
+     * Get the invoice that owns the InvoiceItem
+     *
+     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     */
+    public function invoice(): \Illuminate\Database\Eloquent\Relations\BelongsTo
+    {
+        return $this->belongsTo(Invoice::class, 'invoice_id', 'id');
+    }
 }
