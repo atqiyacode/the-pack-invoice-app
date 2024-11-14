@@ -26,6 +26,7 @@ This project involves creating an Invoice Management System with user authentica
     
 - [✅] **Model and Migration for Invoice Items**  
   - Define fields for items:
+    - `invoice_id`: BigInteger (FK Invoice).
     - `item_name`: String.
     - `item_price`: Decimal.
     - `item_quantity`: Integer.

@@ -2,8 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\StoreInvoiceItemRequest;
-use App\Http\Requests\UpdateInvoiceItemRequest;
+use App\Http\Requests\InvoiceItem\StoreInvoiceItemRequest;
+use App\Http\Requests\InvoiceItem\UpdateInvoiceItemRequest;
+use App\Http\Resources\InvoiceItemResource;
 use App\Models\InvoiceItem;
 
 class InvoiceItemController extends Controller
@@ -13,15 +14,8 @@ class InvoiceItemController extends Controller
      */
     public function index()
     {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     */
-    public function create()
-    {
-        //
+        $invoiceItems = InvoiceItem::paginate(15);
+        return InvoiceItemResource::collection($invoiceItems);
     }
 
     /**
@@ -29,7 +23,9 @@ class InvoiceItemController extends Controller
      */
     public function store(StoreInvoiceItemRequest $request)
     {
-        //
+        $invoiceItem = new InvoiceItem();
+        $invoiceItem->create($request->all());
+        return $this->respondWithSuccess($invoiceItem);
     }
 
     /**
@@ -37,15 +33,7 @@ class InvoiceItemController extends Controller
      */
     public function show(InvoiceItem $invoiceItem)
     {
-        //
-    }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
-    public function edit(InvoiceItem $invoiceItem)
-    {
-        //
+        return $this->respondWithSuccess($invoiceItem);
     }
 
     /**
@@ -53,7 +41,8 @@ class InvoiceItemController extends Controller
      */
     public function update(UpdateInvoiceItemRequest $request, InvoiceItem $invoiceItem)
     {
-        //
+        $invoiceItem->update($request->all());
+        return $this->respondWithSuccess($invoiceItem);
     }
 
     /**
@@ -61,6 +50,7 @@ class InvoiceItemController extends Controller
      */
     public function destroy(InvoiceItem $invoiceItem)
     {
-        //
+        $invoiceItem->delete();
+        return $this->respondWithSuccess($invoiceItem);
     }
 }

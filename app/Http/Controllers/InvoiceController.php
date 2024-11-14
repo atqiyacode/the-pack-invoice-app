@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\Invoice\StoreInvoiceRequest;
 use App\Http\Requests\Invoice\UpdateInvoiceRequest;
+use App\Http\Resources\InvoiceResource;
 use App\Models\Invoice;
 
 class InvoiceController extends Controller
@@ -13,7 +14,8 @@ class InvoiceController extends Controller
      */
     public function index()
     {
-        //
+        $invoices = Invoice::paginate(15);
+        return InvoiceResource::collection($invoices);
     }
 
     /**
@@ -21,7 +23,9 @@ class InvoiceController extends Controller
      */
     public function store(StoreInvoiceRequest $request)
     {
-        //
+        $invoice = new Invoice();
+        $invoice->create($request->all());
+        return $this->respondWithSuccess($invoice);
     }
 
     /**
@@ -29,7 +33,7 @@ class InvoiceController extends Controller
      */
     public function show(Invoice $invoice)
     {
-        //
+        return $this->respondWithSuccess($invoice);
     }
 
     /**
@@ -37,7 +41,8 @@ class InvoiceController extends Controller
      */
     public function update(UpdateInvoiceRequest $request, Invoice $invoice)
     {
-        //
+        $invoice->update($request->all());
+        return $this->respondWithSuccess($invoice);
     }
 
     /**
@@ -45,6 +50,7 @@ class InvoiceController extends Controller
      */
     public function destroy(Invoice $invoice)
     {
-        //
+        $invoice->delete();
+        return $this->respondWithSuccess($invoice);
     }
 }
