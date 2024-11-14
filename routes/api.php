@@ -5,8 +5,7 @@ use App\Http\Controllers\InvoiceItemController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
-
-
+require __DIR__ . '/auth.php';
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/user', function (Request $request) {
