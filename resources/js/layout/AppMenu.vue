@@ -16,7 +16,7 @@ const model = ref([
             {
                 label: 'Invoice',
                 icon: 'pi pi-fw pi-pencil',
-                to: '/pages/invoice'
+                to: '/invoice'
             }
         ]
     }

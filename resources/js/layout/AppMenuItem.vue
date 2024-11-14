@@ -1,5 +1,5 @@
 <script setup>
-import { useLayout } from '@/stores/useLayout';
+import { useLayout } from '@/shared/store/useLayout';
 import { onBeforeMount, ref, watch } from 'vue';
 import { useRoute } from 'vue-router';
 import { storeToRefs } from 'pinia';

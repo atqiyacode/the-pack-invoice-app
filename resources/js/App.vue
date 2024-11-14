@@ -1,6 +1,6 @@
 <script setup>
 import { onBeforeMount } from 'vue';
-import { useLayout } from '@/stores/useLayout';
+import { useLayout } from '@/shared/store/useLayout';
 import { storeToRefs } from 'pinia';
 
 const { isDarkTheme } = storeToRefs(useLayout());

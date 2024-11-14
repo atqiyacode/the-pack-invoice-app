@@ -1,5 +1,5 @@
 <script setup>
-import { useLayout } from '@/stores/useLayout';
+import { useLayout } from '@/shared/store/useLayout';
 import { computed, ref, watch } from 'vue';
 import AppFooter from './AppFooter.vue';
 import AppSidebar from './AppSidebar.vue';

@@ -1,5 +1,8 @@
 import AppLayout from '@/layout/AppLayout.vue';
 import { createRouter, createWebHistory } from 'vue-router';
+import { AuthRouter } from '../modules/auth/router/AuthRouter';
+import { DashboardRouter } from '../modules/dashboard/router/DashboardRouter';
+import { InvoiceRouter } from '../modules/invoice/router/InvoiceRouter';
 
 const router = createRouter({
     history: createWebHistory(),
@@ -7,25 +10,10 @@ const router = createRouter({
         {
             path: '/',
             component: AppLayout,
-            children: [
-                {
-                    path: '/',
-                    name: 'dashboard',
-                    component: () => import('@/views/pages/DashboardPage.vue')
-                },
-                {
-                    path: '/pages/invoice',
-                    name: 'invoice',
-                    component: () => import('@/views/pages/invoice/InvoicePage.vue')
-                }
-            ]
+            children: [...DashboardRouter, ...InvoiceRouter]
         },
 
-        {
-            path: '/login',
-            name: 'login',
-            component: () => import('@/views/pages/auth/Login.vue')
-        }
+        ...AuthRouter
     ]
 });
 

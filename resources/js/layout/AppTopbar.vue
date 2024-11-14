@@ -1,5 +1,5 @@
 <script setup>
-import { useLayout } from '@/stores/useLayout';
+import { useLayout } from '@/shared/store/useLayout';
 import AppConfigurator from './AppConfigurator.vue';
 import { storeToRefs } from 'pinia';
 
