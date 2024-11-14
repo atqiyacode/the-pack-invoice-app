@@ -2,9 +2,10 @@
 import { useLayout } from '@/shared/store/useLayout';
 import AppConfigurator from './AppConfigurator.vue';
 import { storeToRefs } from 'pinia';
+import { useAuthStore } from '../modules/auth/store/useAuthStore';
 
 const APP_NAME = 'Invoice App';
-
+const AuthStore = useAuthStore();
 const { onMenuToggle, toggleDarkMode } = useLayout();
 
 const { isDarkTheme } = storeToRefs(useLayout());
@@ -71,9 +72,9 @@ const { isDarkTheme } = storeToRefs(useLayout());
                         <i class="pi pi-user"></i>
                         <span>Profile</span>
                     </button>
-                    <button type="button" class="layout-topbar-action">
+                    <button type="button" class="layout-topbar-action" @click="AuthStore.processLogout">
                         <i class="pi pi-sign-out"></i>
-                        <span>Profile</span>
+                        <span>Logut</span>
                     </button>
                 </div>
             </div>

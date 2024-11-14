@@ -1,14 +1,26 @@
 <script setup>
 import FloatingConfigurator from '@/components/FloatingConfigurator.vue';
-import { ref } from 'vue';
 
-const email = ref('');
-const password = ref('');
-const checked = ref(false);
+import { useVuelidate } from '@vuelidate/core';
+import { required, minLength } from '@vuelidate/validators';
 
-const login = () => {
-    console.log('Login');
+import { useAuthStore } from '../store/useAuthStore';
+import { storeToRefs } from 'pinia';
+import { useGlobalStore } from '../../../shared/store/useGlobalStore';
+
+const GlobalStore = useGlobalStore();
+const AuthStore = useAuthStore();
+
+const { removeError } = GlobalStore;
+const { loading, errors } = storeToRefs(GlobalStore);
+const { form } = storeToRefs(AuthStore);
+
+const rules = {
+    email: { required, minLength: minLength(5) },
+    password: { required },
+    checked: {}
 };
+const v$ = useVuelidate(rules, form);
 </script>
 
 <template>
@@ -16,7 +28,7 @@ const login = () => {
     <div class="bg-surface-50 dark:bg-surface-950 flex items-center justify-center min-h-screen min-w-[100vw] overflow-hidden">
         <div class="flex flex-col items-center justify-center">
             <div style="border-radius: 56px; padding: 0.3rem; background: linear-gradient(180deg, var(--primary-color) 10%, rgba(33, 150, 243, 0) 30%)">
-                <form @submit.prevent="login" class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
+                <form @submit.prevent="AuthStore.processLogin" class="w-full bg-surface-0 dark:bg-surface-900 py-20 px-8 sm:px-20" style="border-radius: 53px">
                     <div class="text-center mb-8">
                         <svg viewBox="0 0 54 40" fill="none" xmlns="http://www.w3.org/2000/svg" class="mb-8 w-16 shrink-0 mx-auto">
                             <path
@@ -40,20 +52,25 @@ const login = () => {
                     </div>
 
                     <div>
-                        <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
-                        <InputText id="email1" type="text" placeholder="Email address" class="w-full md:w-[30rem] mb-8" v-model="email" :invalid="true" />
-
-                        <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
-                        <Password id="password1" v-model="password" placeholder="Password" :toggleMask="true" class="mb-4" fluid :feedback="false"></Password>
+                        <div class="flex flex-col gap-2 mb-4">
+                            <label for="email1" class="block text-surface-900 dark:text-surface-0 text-xl font-medium mb-2">Email</label>
+                            <InputText @blur="v$.email.$touch()" @input="removeError()" v-model="form.email" :invalid="errors.email || v$.email.$error" id="email1" type="text" placeholder="Email address" class="w-full md:w-[30rem]" />
+                            <Message size="small" severity="error" variant="simple">{{ errors.email ? errors.email[0] : '' }}</Message>
+                        </div>
+                        <div class="flex flex-col gap-2 mb-4">
+                            <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
+                            <Password id="password1" v-model="form.password" placeholder="Password" :toggleMask="true" fluid :feedback="false" :invalid="errors.password || v$.password.$error"></Password>
+                            <Message size="small" severity="error" variant="simple">{{ errors.password ? errors.password[0] : '' }}</Message>
+                        </div>
 
                         <div class="flex items-center justify-between mt-2 mb-8 gap-8">
                             <div class="flex items-center">
-                                <Checkbox v-model="checked" id="rememberme1" binary class="mr-2"></Checkbox>
+                                <Checkbox v-model="form.checked" id="rememberme1" binary class="mr-2"></Checkbox>
                                 <label for="rememberme1">Remember me</label>
                             </div>
                             <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>
                         </div>
-                        <Button label="Sign In" class="w-full" type="submit"></Button>
+                        <Button label="Sign In" class="w-full" type="submit" :disabled="v$.$invalid || loading"></Button>
                     </div>
                 </form>
             </div>
