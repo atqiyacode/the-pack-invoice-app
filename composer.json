@@ -8,6 +8,7 @@
         "php": "^8.2",
         "barryvdh/laravel-dompdf": "^3.0",
         "dedoc/scramble": "^0.11.26",
+        "essa/api-tool-kit": "^2.1",
         "garygreen/pretty-routes": "^1.0",
         "laravel/framework": "^11.9",
         "laravel/horizon": "^5.29",

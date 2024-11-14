@@ -2,7 +2,9 @@
 
 namespace App\Models;
 
+use App\Filters\InvoiceFilters;
 use App\Observers\InvoiceObserver;
+use Essa\APIToolKit\Filters\Filterable;
 use Illuminate\Database\Eloquent\Attributes\ObservedBy;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -12,6 +14,10 @@ class Invoice extends Model
 {
     /** @use HasFactory<\Database\Factories\InvoiceFactory> */
     use HasFactory;
+
+    use Filterable;
+
+    protected string $default_filters = InvoiceFilters::class;
 
     /**
      * The attributes that are mass assignable.

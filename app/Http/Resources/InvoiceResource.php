@@ -28,6 +28,8 @@ class InvoiceResource extends JsonResource
             'gst_amount' => $this->gst_amount,
             'grand_total' => $this->grand_total,
 
+            'items_count' => $this->items_count,
+
             'items' => $this->when(
                 request()->routeIs('invoices.*'),
                 function () {

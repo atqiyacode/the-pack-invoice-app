@@ -23,7 +23,7 @@ class InvoiceFactory extends Factory
         $discount_subtotal = $subtotal * $discount_amount;
         return [
             'invoice_number' => fake()->unique()->numberBetween(10, 1000),
-            'invoice_date' => now(),
+            'invoice_date' => fake()->date('Y-m-d', now()),
             'client_name' => fake()->name(),
             'client_address' => fake()->address(),
             'remarks' => fake()->realText(),

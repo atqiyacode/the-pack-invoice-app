@@ -6,15 +6,19 @@ use App\Http\Requests\Invoice\StoreInvoiceRequest;
 use App\Http\Requests\Invoice\UpdateInvoiceRequest;
 use App\Http\Resources\InvoiceResource;
 use App\Models\Invoice;
+use Illuminate\Http\Request;
 
 class InvoiceController extends Controller
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(Request $request)
     {
-        $invoices = Invoice::paginate(15);
+        $request->merge([
+            'sorts' => '-invoice_date'
+        ]);
+        $invoices = Invoice::with(['items'])->withCount(['items'])->useFilters()->dynamicPaginate();
         return InvoiceResource::collection($invoices);
     }
 
@@ -33,7 +37,9 @@ class InvoiceController extends Controller
      */
     public function show(Invoice $invoice)
     {
-        return $this->respondWithSuccess($invoice);
+        $invoice->loadCount('items');
+        $result = new InvoiceResource($invoice);
+        return $this->respondWithSuccess($result);
     }
 
     /**
@@ -42,7 +48,8 @@ class InvoiceController extends Controller
     public function update(UpdateInvoiceRequest $request, Invoice $invoice)
     {
         $invoice->update($request->all());
-        return $this->respondWithSuccess($invoice);
+        $result = new InvoiceResource($invoice);
+        return $this->respondWithSuccess($result);
     }
 
     /**
