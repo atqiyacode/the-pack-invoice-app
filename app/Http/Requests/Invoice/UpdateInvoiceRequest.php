@@ -22,7 +22,14 @@ class UpdateInvoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'invoice_date' => 'sometimes|date',
+            'client_name' => 'sometimes|string',
+            'client_address' => 'sometimes|string',
+            'remarks' => 'nullable|string',
+            'discount_amount' => 'nullable|numeric|decimal:0,1',
+            'subtotal' => 'sometimes|numeric',
+            'gst_amount' => 'sometimes|numeric',
+            'grand_total' => 'sometimes|numeric',
         ];
     }
 }

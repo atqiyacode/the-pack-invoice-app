@@ -22,7 +22,14 @@ class StoreInvoiceRequest extends FormRequest
     public function rules(): array
     {
         return [
-            //
+            'invoice_date' => 'required|date',
+            'client_name' => 'required|string',
+            'client_address' => 'required|string',
+            'remarks' => 'nullable|string',
+            'discount_amount' => 'nullable|numeric|decimal:0,1',
+            'subtotal' => 'required|numeric',
+            'gst_amount' => 'required|numeric',
+            'grand_total' => 'required|numeric',
         ];
     }
 }
