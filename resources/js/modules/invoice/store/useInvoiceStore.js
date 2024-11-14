@@ -2,9 +2,11 @@ import { defineStore } from 'pinia';
 import { ref, watch } from 'vue';
 import { ApiService } from '../../../infrastructure/api/ApiService';
 import { useToast } from 'primevue';
+import { useRouter } from 'vue-router';
 export const useInvoiceStore = defineStore(
     'Invoice',
     () => {
+        const router = useRouter();
         const toast = useToast();
 
         const invoices = ref([]);
@@ -48,13 +50,6 @@ export const useInvoiceStore = defineStore(
             deleteDialog.value = false;
         }
 
-        function onEdit(data) {
-            getById(data.id);
-
-            detailInvoice.value = data;
-            formDialog.value = true;
-        }
-
         function onDelete(data) {
             form.value = {
                 id: data.id,
@@ -89,6 +84,45 @@ export const useInvoiceStore = defineStore(
                     })
                     .catch((err) => {
                         form.value = {};
+                        reject(err);
+                    });
+            });
+        };
+
+        const store = () => {
+            return new Promise((resolve, reject) => {
+                ApiService.post(`api/invoices`, form.value)
+                    .then(async (res) => {
+                        toast.add({ severity: 'success', summary: 'Success', detail: 'Invoice Created', life: 5000 });
+                        loadData({
+                            page: page.value,
+                            per_page: per_page.value
+                        });
+                        hideDialog();
+                        router.push({ name: 'invoice' });
+                        resolve(res);
+                    })
+                    .catch((err) => {
+                        reject(err);
+                    });
+            });
+        };
+
+        const update = () => {
+            return new Promise((resolve, reject) => {
+                ApiService.put(`api/invoices/${form.value.id}`, form.value)
+                    .then(async (res) => {
+                        toast.add({ severity: 'success', summary: 'Success', detail: 'Invoice Updated', life: 5000 });
+                        loadData({
+                            search: keyword.value,
+                            page: page.value,
+                            per_page: per_page.value
+                        });
+                        hideDialog();
+                        router.push({ name: 'invoice' });
+                        resolve(res);
+                    })
+                    .catch((err) => {
                         reject(err);
                     });
             });
@@ -139,9 +173,10 @@ export const useInvoiceStore = defineStore(
             // function
             loadData,
             getById,
+            store,
+            update,
             destroy,
             //
-            onEdit,
             onDelete,
             hideDialog,
             onChangePage

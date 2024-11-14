@@ -2,14 +2,16 @@
 import { onBeforeMount, onMounted, ref } from 'vue';
 import { useInvoiceStore } from '../store/useInvoiceStore';
 import { storeToRefs } from 'pinia';
+import { useGlobalStore } from '../../../shared/store/useGlobalStore';
 
+const GlobalStore = useGlobalStore();
 const InvoiceStore = useInvoiceStore();
+
+const { loading } = storeToRefs(GlobalStore);
 
 const { meta, invoices, detailInvoice, deleteDialog, keyword, rowsPerPageOptions } = storeToRefs(InvoiceStore);
 
 const { loadData, onDelete, hideDialog, onChangePage, destroy } = InvoiceStore;
-
-const label = 'Invoice';
 
 onBeforeMount(() => {
     keyword.value = '';
@@ -45,7 +47,7 @@ const showTemplate = () => {
             </template>
         </Toolbar>
 
-        <DataTable showGridlines stripedRows :value="invoices">
+        <DataTable :loading="loading" showGridlines stripedRows :value="invoices">
             <template #empty>
                 <div class="flex flex-column md:flex-row md:justify-content-center md:align-items-center mb-3">
                     <h5 class="m-0 text-red-600">Data Not Found</h5>
