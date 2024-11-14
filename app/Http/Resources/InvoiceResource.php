@@ -16,6 +16,7 @@ class InvoiceResource extends JsonResource
     public function toArray($request): array
     {
         return [
+            'id' => $this->id,
             'invoice_number' => $this->invoice_number,
             'invoice_date' => $this->invoice_date,
             'invoice_date_formatted' => Carbon::parse($this->invoice_date)->isoFormat('LLL'),
@@ -27,7 +28,12 @@ class InvoiceResource extends JsonResource
             'gst_amount' => $this->gst_amount,
             'grand_total' => $this->grand_total,
 
-            'items' => InvoiceItemResource::collection($this->items),
+            'items' => $this->when(
+                request()->routeIs('invoices.*'),
+                function () {
+                    return InvoiceItemResource::collection($this->items);
+                }
+            ),
         ];
     }
 }
