@@ -2,16 +2,27 @@
 
 namespace App\Observers;
 
+use App\Events\UserEvent;
 use App\Models\User;
 
 class UserObserver
 {
     /**
+     * Dispatch events and log activities when the User is created, updated, deleted, restored, or force deleted.
+     *
+     */
+    protected function handleEventAndLogActivity(User $data): void
+    {
+        UserEvent::dispatch($data);
+        //
+    }
+
+    /**
      * Handle the User "created" event.
      */
     public function created(User $user): void
     {
-        //
+        $this->handleEventAndLogActivity($user);
     }
 
     /**
@@ -19,7 +30,7 @@ class UserObserver
      */
     public function updated(User $user): void
     {
-        //
+        $this->handleEventAndLogActivity($user);
     }
 
     /**
@@ -27,7 +38,7 @@ class UserObserver
      */
     public function deleted(User $user): void
     {
-        //
+        $this->handleEventAndLogActivity($user);
     }
 
     /**
@@ -35,7 +46,7 @@ class UserObserver
      */
     public function restored(User $user): void
     {
-        //
+        $this->handleEventAndLogActivity($user);
     }
 
     /**
@@ -43,6 +54,6 @@ class UserObserver
      */
     public function forceDeleted(User $user): void
     {
-        //
+        $this->handleEventAndLogActivity($user);
     }
 }
