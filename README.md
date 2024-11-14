@@ -7,12 +7,12 @@ This project involves creating an Invoice Management System with user authentica
 ## 📋 To-Do List
 
 ### 1. User Authentication
-- [🟡] **Setup Authentication System**  
+- [✅] **Setup Authentication System**  
   Implement basic user authentication with username and password for secure access to the application.
 
 ### 2. CRUD for Invoices
 #### Backend (Laravel)
-- [🟡] **Model and Migration for Invoices**  
+- [✅] **Model and Migration for Invoices**  
   - Define fields:
     - `invoice_number`: Auto-generated, formatted as `INVYYMMDDXX`.
     - `invoice_date`: Date field.
@@ -24,7 +24,7 @@ This project involves creating an Invoice Management System with user authentica
     - `gst_amount`: Decimal (9% of subtotal).
     - `grand_total`: Decimal.
     
-- [🟡] **Model and Migration for Invoice Items**  
+- [✅] **Model and Migration for Invoice Items**  
   - Define fields for items:
     - `item_name`: String.
     - `item_price`: Decimal.
