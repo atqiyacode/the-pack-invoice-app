@@ -180,30 +180,38 @@ const deleteItem = (data) => {
                 </div>
             </div>
         </Fluid>
-
-        <Message size="large" severity="error" variant="simple" v-if="form.items?.length < 1"> Please Select Item </Message>
-
-        <Message size="large" severity="error" variant="simple">{{ errors.items ? errors.items[0] : '' }}</Message>
-
         <Toolbar class="mb-6">
             <template #start>
-                <h5 class="mr-2 font-bold">Items</h5>
+                <h2 class="font-bold">Items</h2>
+            </template>
+            <template #center>
+                <Message size="large" severity="error" variant="simple">{{ errors.items ? errors.items[0] : '' }}</Message>
+                <Message size="large" severity="error" variant="simple" v-if="form.items?.length < 1"> Please Add Item </Message>
             </template>
             <template #end>
-                <Button label="Add Item" outlined icon="pi pi-plus" severity="success" class="mr-2" @click="dialogItem = true" />
+                <Button label="Add Item" outlined icon="pi pi-plus" severity="success" @click="dialogItem = true" />
             </template>
         </Toolbar>
 
         <DataTable :lazy="true" :value="form.items">
+            <template #empty>
+                <div class="flex flex-column md:flex-row md:justify-content-center md:align-items-center mb-3">
+                    <h5 class="m-0 text-red-600">Item Not Found</h5>
+                </div>
+            </template>
             <Column class="text-center" header="action">
                 <template #body="slotProps">
-                    <Button label="" icon="pi pi-trash" severity="danger" class="mr-2" @click="deleteItem(slotProps.data)" />
+                    <Button label="" icon="pi pi-trash" severity="danger" @click="deleteItem(slotProps.data)" />
                 </template>
             </Column>
-            <Column field="item_name" class="text-center" header="item_name"></Column>
-            <Column field="item_quantity" class="text-center" header="item_quantity"></Column>
-            <Column field="item_price" class="text-center" header="item_price"></Column>
-            <Column field="item_amount" class="text-center" header="item_amount">
+            <Column field="item_name" class="text-center" header="Name"></Column>
+            <Column field="item_quantity" class="text-center" header="Qty"></Column>
+            <Column field="item_price" class="text-center" header="Price">
+                <template #body="slotProps">
+                    {{ formatCurrency(slotProps.data.item_price) }}
+                </template>
+            </Column>
+            <Column field="item_amount" class="text-center" header="Amount">
                 <template #body="slotProps">
                     {{ formatCurrency(getTotal(slotProps.data)) }}
                 </template>

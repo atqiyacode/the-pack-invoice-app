@@ -151,6 +151,18 @@ export const useInvoiceStore = defineStore(
             });
         };
 
+        const downloadPdf = (data) => {
+            return new Promise((resolve, reject) => {
+                ApiService.get(`api/download-invoice/${data.id}`)
+                    .then(async (res) => {
+                        resolve(res);
+                    })
+                    .catch((err) => {
+                        reject(err);
+                    });
+            });
+        };
+
         const onChangePage = (val) => {
             page.value = val.page + 1;
             per_page.value = val.rows;
@@ -180,6 +192,7 @@ export const useInvoiceStore = defineStore(
             store,
             update,
             destroy,
+            downloadPdf,
             //
             onDelete,
             hideDialog,
