@@ -113,13 +113,6 @@ export const useInvoiceStore = defineStore(
         };
 
         const update = () => {
-            const date = new Date(form.value.invoice_date);
-            const year = date.getFullYear().toString();
-            const month = ('0' + (date.getMonth() + 1)).slice(-2);
-            const day = ('0' + date.getDate()).slice(-2);
-
-            const formattedDate = `${year}-${month}-${day}`;
-            console.log(formattedDate);
             return new Promise((resolve, reject) => {
                 ApiService.put(`api/invoices/${form.value.id}`, form.value)
                     .then(async (res) => {
@@ -129,8 +122,8 @@ export const useInvoiceStore = defineStore(
                             page: page.value,
                             per_page: per_page.value
                         });
-                        // hideDialog();
-                        // router.push({ name: 'invoice' });
+                        hideDialog();
+                        router.push({ name: 'invoice' });
                         resolve(res);
                     })
                     .catch((err) => {

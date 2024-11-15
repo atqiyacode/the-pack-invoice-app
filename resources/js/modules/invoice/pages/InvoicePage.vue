@@ -64,7 +64,7 @@ const showTemplate = () => {
             <Column :exportable="false" header="Action">
                 <template #body="slotProps">
                     <Button icon="pi pi-eye" outlined rounded severity="info" class="mr-2" @click="$router.push({ name: 'invoice-detail', params: { id: slotProps.data.id } })" />
-                    <Button icon="pi pi-pencil" outlined rounded severity="warn" class="mr-2" @click="$router.push({ name: 'invoice-edit', params: { id: slotProps.data.id } })" />
+                    <!-- <Button icon="pi pi-pencil" outlined rounded severity="warn" class="mr-2" @click="$router.push({ name: 'invoice-edit', params: { id: slotProps.data.id } })" /> -->
                     <Button icon="pi pi-trash" outlined rounded severity="danger" @click="onDelete(slotProps.data)" />
                 </template>
             </Column>

@@ -3,11 +3,16 @@ import { onMounted, ref, watch } from 'vue';
 import { useInvoiceStore } from '../store/useInvoiceStore';
 import { storeToRefs } from 'pinia';
 import { useRoute } from 'vue-router';
+import { numeric, required } from '@vuelidate/validators';
+import useVuelidate from '@vuelidate/core';
+import { useGlobalStore } from '../../../shared/store/useGlobalStore';
 
 const route = useRoute();
 
+const GlobalStore = useGlobalStore();
 const InvoiceStore = useInvoiceStore();
 
+const { loading, errors } = storeToRefs(GlobalStore);
 const { form, detailInvoice } = storeToRefs(InvoiceStore);
 
 const { getById, store, update } = InvoiceStore;
@@ -20,12 +25,28 @@ const gstTax = ref(9);
 const dialogItem = ref(false);
 const formItem = ref({});
 
+const nonEmptyArray = (value) => {
+    return Array.isArray(value) && value.length > 0;
+};
+
+const rules = {
+    invoice_date: { required },
+    client_name: { required },
+    client_address: { required },
+    remarks: {},
+    discount_amount: { numeric },
+    subtotal: { required, numeric },
+    gst_amount: { required, numeric },
+    grand_total: { required, numeric },
+    items: { required, $validators: { nonEmptyArray } }
+};
+const v$ = useVuelidate(rules, form);
+
 onMounted(() => {
     if (route.params.id) {
         getById(route.params.id);
     } else {
         form.value = {
-            invoice_number: null,
             invoice_date: null,
             client_name: null,
             client_address: null,
@@ -97,6 +118,9 @@ const addItem = () => {
     dialogItem.value = false;
     formItem.value = {};
 };
+const deleteItem = (data) => {
+    form.value.items = form.value.items.filter((item) => item.item_name !== data.item_name);
+};
 </script>
 
 <template>
@@ -111,7 +135,7 @@ const addItem = () => {
                 </h5>
             </template>
             <template #end>
-                <Button label="Submit" icon="pi pi-save" severity="success" class="mr-2" @click="route.params.id ? update() : store()" />
+                <Button label="Submit" icon="pi pi-save" :severity="v$.$invalid ? 'warn' : 'success'" class="mr-2" @click="route.params.id ? update() : store()" :disabled="v$.$invalid" />
             </template>
         </Toolbar>
 
@@ -126,41 +150,56 @@ const addItem = () => {
 
                         <div class="flex-auto">
                             <label class="font-bold block mb-2" for="invoice_date"> invoice_date</label>
-                            <DatePicker v-model="form.invoice_date" showIcon fluid :showOnFocus="true" dateFormat="DD, dd MM yy" />
+                            <DatePicker @blur="v$.invoice_date.$touch()" :invalid="errors.invoice_date || v$.invoice_date.$error" v-model="form.invoice_date" showIcon fluid :showOnFocus="true" dateFormat="DD, dd MM yy" />
+                            <Message size="small" severity="error" variant="simple">{{ errors.invoice_date ? errors.invoice_date[0] : '' }}</Message>
                         </div>
                         <div class="flex-auto">
                             <label class="font-bold block mb-2" for="client_name">client_name</label>
-                            <InputText v-model="form.client_name" id="client_name" type="text" />
+                            <InputText @blur="v$.client_name.$touch()" :invalid="errors.client_name || v$.client_name.$error" v-model="form.client_name" id="client_name" type="text" />
+                            <Message size="small" severity="error" variant="simple">{{ errors.client_name ? errors.client_name[0] : '' }}</Message>
                         </div>
                     </div>
 
                     <div class="flex flex-wrap">
                         <label class="font-bold block mb-2" for="client_address">client_address</label>
-                        <Textarea v-model="form.client_address" id="client_address" rows="4" />
+                        <Textarea @blur="v$.client_address.$touch()" :invalid="errors.client_address || v$.client_address.$error" v-model="form.client_address" id="client_address" rows="4" />
+                        <Message size="small" severity="error" variant="simple">{{ errors.client_address ? errors.client_address[0] : '' }}</Message>
                     </div>
-                    <div class="flex flex-wrap">
-                        <label class="font-bold block mb-2" for="remarks">remarks</label>
-                        <InputText v-model="form.remarks" id="remarks" type="text" />
+                    <div class="flex flex-col md:flex-row gap-4">
+                        <div class="flex-auto">
+                            <label class="font-bold block mb-2" for="remarks">remarks</label>
+                            <InputText @blur="v$.remarks.$touch()" :invalid="errors.remarks || v$.remarks.$error" v-model="form.remarks" id="remarks" type="text" />
+                            <Message size="small" severity="error" variant="simple">{{ errors.remarks ? errors.remarks[0] : '' }}</Message>
+                        </div>
+                        <div class="flex-auto">
+                            <label class="font-bold block mb-2" for="discount">discount</label>
+                            <InputNumber suffix="%" @blur="v$.discount_amount.$touch()" :invalid="errors.discount_amount || v$.discount_amount.$error" v-model="form.discount_amount" :min="0" :max="100" fluid @keypress="updateDiscount" />
+                            <Message size="small" severity="error" variant="simple">{{ errors.discount_amount ? errors.discount_amount[0] : '' }}</Message>
+                        </div>
                     </div>
                 </div>
             </div>
         </Fluid>
-    </div>
 
-    <div className="card">
+        <Message size="large" severity="error" variant="simple" v-if="form.items?.length < 1"> Please Select Item </Message>
+
+        <Message size="large" severity="error" variant="simple">{{ errors.items ? errors.items[0] : '' }}</Message>
+
         <Toolbar class="mb-6">
             <template #start>
-                <InputNumber suffix="%" v-model="form.discount_amount" :min="0" :max="100" fluid @keyup="updateDiscount" />
-            </template>
-            <template #center>
                 <h5 class="mr-2 font-bold">Items</h5>
             </template>
             <template #end>
-                <Button label="Add Item" icon="pi pi-plus" severity="success" class="mr-2" @click="dialogItem = true" />
+                <Button label="Add Item" outlined icon="pi pi-plus" severity="success" class="mr-2" @click="dialogItem = true" />
             </template>
         </Toolbar>
 
         <DataTable :lazy="true" :value="form.items">
+            <Column class="text-center" header="action">
+                <template #body="slotProps">
+                    <Button label="" icon="pi pi-trash" severity="danger" class="mr-2" @click="deleteItem(slotProps.data)" />
+                </template>
+            </Column>
             <Column field="item_name" class="text-center" header="item_name"></Column>
             <Column field="item_quantity" class="text-center" header="item_quantity"></Column>
             <Column field="item_price" class="text-center" header="item_price"></Column>
@@ -169,21 +208,21 @@ const addItem = () => {
                     {{ formatCurrency(getTotal(slotProps.data)) }}
                 </template>
             </Column>
-            <ColumnGroup type="footer" v-if="form.items">
+            <ColumnGroup type="footer" v-if="form.items?.length > 0">
                 <Row>
-                    <Column footer="Sub-Total:" :colspan="3" footerStyle="text-align:right" />
+                    <Column footer="Sub-Total:" :colspan="4" footerStyle="text-align:right" />
                     <Column :footer="`${formatCurrency(getSubtotal(form.items))}`" />
                 </Row>
                 <Row>
-                    <Column :footer="`Discount (${form.discount_amount}%):`" :colspan="3" footerStyle="text-align:right" />
+                    <Column :footer="`Discount (${form.discount_amount}%):`" :colspan="4" footerStyle="text-align:right" />
                     <Column :footer="`${formatCurrency(getDiscountAmount(form.discount_amount))}`" />
                 </Row>
                 <Row>
-                    <Column :footer="`GST Amount (${gstTax}%):`" :colspan="3" footerStyle="text-align:right" />
+                    <Column :footer="`GST Amount (${gstTax}%):`" :colspan="4" footerStyle="text-align:right" />
                     <Column :footer="`${formatCurrency(getGstAmount())}`" />
                 </Row>
                 <Row>
-                    <Column footer="Grand Total:" :colspan="3" footerStyle="text-align:right" />
+                    <Column footer="Grand Total:" :colspan="4" footerStyle="text-align:right" />
                     <Column :footer="`${formatCurrency(getGrandTotal())}`" />
                 </Row>
             </ColumnGroup>
