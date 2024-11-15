@@ -1,4 +1,4 @@
-# Laravel + Vue.js Invoice Application
+# (FINISHED) Laravel + Vue.js Invoice Application
 
 This project involves creating an Invoice Management System with user authentication, dynamic invoice CRUD functionality, real-time calculations, PDF generation, and optional unit testing. Below are the key tasks organized as a To-Do List.
 
