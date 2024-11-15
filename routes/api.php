@@ -16,6 +16,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
         'invoice' => 'id'
     ]);
 
+    Route::get('/download-invoice/{id}', [InvoiceController::class, 'download']);
+
     Route::apiResource('/invoice-items', InvoiceItemController::class)->parameters([
         'invoice-items' => 'id'
     ]);

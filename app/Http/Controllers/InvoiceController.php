@@ -7,8 +7,10 @@ use App\Http\Requests\Invoice\UpdateInvoiceRequest;
 use App\Http\Resources\InvoiceResource;
 use App\Models\Invoice;
 use App\Models\InvoiceItem;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Str;
 
 class InvoiceController extends Controller
 {
@@ -93,5 +95,24 @@ class InvoiceController extends Controller
     {
         $invoice->delete();
         return $this->respondWithSuccess($invoice);
+    }
+
+    public function download($id)
+    {
+        $invoice = Invoice::with(['items'])->findOrFail($id);
+        // Generate the PDF
+        $pdf = Pdf::loadView('invoice.generate-pdf', [
+            'invoice' => $invoice
+        ])
+            ->setPaper('A4', 'landscape');
+
+        // Generate the file name
+        $fileName = Str::upper(Str::slug($invoice->invoice_number)) . '.pdf';
+
+        // Return the PDF as a download
+        return response()->streamDownload(
+            fn() => print($pdf->output()),
+            $fileName
+        );
     }
 }

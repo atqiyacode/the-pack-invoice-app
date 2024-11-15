@@ -153,8 +153,16 @@ export const useInvoiceStore = defineStore(
 
         const downloadPdf = (data) => {
             return new Promise((resolve, reject) => {
-                ApiService.get(`api/download-invoice/${data.id}`)
+                ApiService.get(`api/download-invoice/${data.id}`, { responseType: 'blob' })
                     .then(async (res) => {
+                        const url = window.URL.createObjectURL(new Blob([res.data], { type: 'application/pdf' }));
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.setAttribute('download', `${data.invoice_number}.pdf`);
+                        document.body.appendChild(link);
+                        link.click();
+                        link.remove();
+
                         resolve(res);
                     })
                     .catch((err) => {
