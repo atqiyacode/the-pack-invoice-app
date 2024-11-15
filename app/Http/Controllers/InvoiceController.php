@@ -94,7 +94,8 @@ class InvoiceController extends Controller
     public function destroy(Invoice $invoice)
     {
         $invoice->delete();
-        return $this->respondWithSuccess($invoice);
+        // return $this->respondWithSuccess($invoice);
+        return response()->json(['message' => 'Invoice deleted successfully'], 200);
     }
 
     public function download($id)
