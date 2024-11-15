@@ -1,9 +1,11 @@
 import { defineStore } from 'pinia';
 import { ref } from 'vue';
+import { useRouter } from 'vue-router';
 
 export const useGlobalStore = defineStore(
     'Global',
     () => {
+        const router = useRouter();
         const language = ref('id');
         const socketId = ref('');
 
@@ -60,6 +62,12 @@ export const useGlobalStore = defineStore(
             error.value = null;
         };
 
+        const clearCurrentSession = () => {
+            localStorage.removeItem('Invoice');
+            localStorage.removeItem('User');
+            router.push({ name: 'login' });
+        };
+
         return {
             language,
             socketId,
@@ -67,7 +75,8 @@ export const useGlobalStore = defineStore(
             errors,
             loading,
             handleErrors,
-            removeError
+            removeError,
+            clearCurrentSession
         };
     },
     {

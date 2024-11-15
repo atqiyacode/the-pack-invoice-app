@@ -12,7 +12,7 @@ const { layoutConfig, layoutState, isSidebarActive } = storeToRefs(useLayout());
 
 const outsideClickListener = ref(null);
 
-watch(isSidebarActive.value, (newVal) => {
+watch(isSidebarActive, (newVal) => {
     if (newVal) {
         bindOutsideClickListener();
     } else {

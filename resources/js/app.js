@@ -12,14 +12,10 @@ import '@/assets/tailwind.css';
 
 import { createPinia } from 'pinia';
 import piniaPluginPersistedstate, { createPersistedState } from 'pinia-plugin-persistedstate';
+import { useUserStore } from './shared/store/useUserStore';
 
 const pinia = createPinia();
 pinia.use(piniaPluginPersistedstate);
-pinia.use(
-    createPersistedState({
-        storage: sessionStorage
-    })
-);
 
 (async () => {
     const app = createApp(App);
@@ -37,7 +33,9 @@ pinia.use(
     app.use(ConfirmationService);
 
     app.use(pinia);
-    app.use(pinia);
+
+    const UserStore = useUserStore();
+    await UserStore.getSession();
 
     app.mount('#app');
 })();

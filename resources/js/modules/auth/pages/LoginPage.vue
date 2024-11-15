@@ -47,7 +47,7 @@ const v$ = useVuelidate(rules, form);
                                 />
                             </g>
                         </svg>
-                        <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Welcome Invoice App!</div>
+                        <div class="text-surface-900 dark:text-surface-0 text-3xl font-medium mb-4">Invoice App!</div>
                         <span class="text-muted-color font-medium">Sign in to continue</span>
                     </div>
 
@@ -58,7 +58,7 @@ const v$ = useVuelidate(rules, form);
                             <Message size="small" severity="error" variant="simple">{{ errors.email ? errors.email[0] : '' }}</Message>
                         </div>
                         <div class="flex flex-col gap-2 mb-4">
-                            <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
+                            <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password (pass: password)</label>
                             <Password id="password1" v-model="form.password" placeholder="Password" :toggleMask="true" fluid :feedback="false" :invalid="errors.password || v$.password.$error"></Password>
                             <Message size="small" severity="error" variant="simple">{{ errors.password ? errors.password[0] : '' }}</Message>
                         </div>
@@ -68,9 +68,14 @@ const v$ = useVuelidate(rules, form);
                                 <Checkbox v-model="form.checked" id="rememberme1" binary class="mr-2"></Checkbox>
                                 <label for="rememberme1">Remember me</label>
                             </div>
-                            <span class="font-medium no-underline ml-2 text-right cursor-pointer text-primary">Forgot password?</span>
                         </div>
                         <Button label="Sign In" class="w-full" type="submit" :disabled="v$.$invalid || loading"></Button>
+                    </div>
+                    <div class="mt-5">
+                        <Panel header="For testing">
+                            <p>Email: <strong>test@example.com</strong></p>
+                            <p>pass: <strong>password</strong></p>
+                        </Panel>
                     </div>
                 </form>
             </div>

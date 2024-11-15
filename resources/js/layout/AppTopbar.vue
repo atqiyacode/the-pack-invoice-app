@@ -3,18 +3,24 @@ import { useLayout } from '@/shared/store/useLayout';
 import AppConfigurator from './AppConfigurator.vue';
 import { storeToRefs } from 'pinia';
 import { useAuthStore } from '../modules/auth/store/useAuthStore';
+import { ref } from 'vue';
 
 const APP_NAME = 'Invoice App';
 const AuthStore = useAuthStore();
-const { onMenuToggle, toggleDarkMode } = useLayout();
+
+const LayoutStore = useLayout();
+
+const { onMenuToggle, toggleDarkMode } = LayoutStore;
 
 const { isDarkTheme } = storeToRefs(useLayout());
+
+const logoutDialog = ref(false);
 </script>
 
 <template>
     <div class="layout-topbar">
         <div class="layout-topbar-logo-container">
-            <button class="layout-menu-button layout-topbar-action" @click="onMenuToggle">
+            <button class="layout-menu-button layout-topbar-action" @click="onMenuToggle()">
                 <i class="pi pi-bars"></i>
             </button>
             <router-link to="/" class="layout-topbar-logo">
@@ -68,11 +74,7 @@ const { isDarkTheme } = storeToRefs(useLayout());
 
             <div class="layout-topbar-menu hidden lg:block">
                 <div class="layout-topbar-menu-content">
-                    <button type="button" class="layout-topbar-action">
-                        <i class="pi pi-user"></i>
-                        <span>Profile</span>
-                    </button>
-                    <button type="button" class="layout-topbar-action" @click="AuthStore.processLogout">
+                    <button type="button" class="layout-topbar-action" @click="logoutDialog = true">
                         <i class="pi pi-sign-out"></i>
                         <span>Logut</span>
                     </button>
@@ -80,4 +82,15 @@ const { isDarkTheme } = storeToRefs(useLayout());
             </div>
         </div>
     </div>
+
+    <Dialog v-model:visible="logoutDialog" :style="{ width: '450px' }" header="Confirm" :modal="true">
+        <div class="flex items-center gap-4">
+            <i class="pi pi-exclamation-triangle !text-3xl" />
+            <span class="font-bold"> Are you sure you want to logout ? </span>
+        </div>
+        <template #footer>
+            <Button label="No" icon="pi pi-times" text @click="logoutDialog = false" />
+            <Button label="Yes" icon="pi pi-check" @click="AuthStore.processLogout" />
+        </template>
+    </Dialog>
 </template>

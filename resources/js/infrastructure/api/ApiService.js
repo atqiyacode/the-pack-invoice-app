@@ -1,5 +1,6 @@
 import axios from 'axios';
 import { useGlobalStore } from '../../shared/store/useGlobalStore';
+import { useUserStore } from '../../shared/store/useUserStore';
 
 const ApiService = axios.create({
     withCredentials: true,
@@ -31,12 +32,14 @@ ApiService.interceptors.response.use(
 ApiService.interceptors.request.use(
     (config) => {
         const GlobalStore = useGlobalStore();
+        const UserStore = useUserStore();
         GlobalStore.$patch({
             loading: true
         });
         GlobalStore.removeError();
         config.headers.Language = `${GlobalStore.language}`;
         config.headers['X-Socket-Id'] = `${GlobalStore.socketId}`;
+        config.headers['Authorization'] = `Bearer ${UserStore.token}`;
         return config;
     },
     (error) => {

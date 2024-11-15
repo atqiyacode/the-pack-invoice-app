@@ -1,35 +1,67 @@
 <?php
 
 use App\Models\User;
+use Illuminate\Support\Facades\Hash;
 
-test('users can authenticate using the login screen', function () {
-    $user = User::factory()->create();
+it('can login a user with valid credentials', function () {
+    // Arrange: Create a user
+    $user = User::factory()->create([
+        'email' => 'test@example.com',
+        'password' => Hash::make('password'),
+    ]);
 
-    $response = $this->post('/login', [
-        'email' => $user->email,
+    // Act: Attempt to login with valid credentials
+    $response = $this->postJson(route('login'), [
+        'email' => 'test@example.com',
         'password' => 'password',
     ]);
 
-    $this->assertAuthenticated();
-    $response->assertNoContent();
+    // Assert: Check response and token
+    $response->assertStatus(200)
+        ->assertJsonStructure(['token']);
+
+    expect(auth()->user()->id)->toBe($user->id);
 });
 
-test('users can not authenticate with invalid password', function () {
-    $user = User::factory()->create();
-
-    $this->post('/login', [
-        'email' => $user->email,
-        'password' => 'wrong-password',
+it('fails to login with invalid credentials', function () {
+    // Arrange: Create a user
+    User::factory()->create([
+        'email' => 'test@example.com',
+        'password' => Hash::make('password'),
     ]);
 
-    $this->assertGuest();
+    // Act: Attempt to login with invalid credentials
+    $response = $this->postJson(route('login'), [
+        'email' => 'test@example.com',
+        'password' => 'wrongpassword',
+    ]);
+
+    // Assert: Check error response
+    $response->assertStatus(422);
 });
 
-test('users can logout', function () {
-    $user = User::factory()->create();
+it('can logout a user', function () {
+    // Arrange: Create and login a user
+    $user = User::factory()->create([
+        'email' => 'test@example.com',
+        'password' => Hash::make('password'),
+    ]);
 
-    $response = $this->actingAs($user)->post('/logout');
+    $token = $user->createToken('authToken')->plainTextToken;
 
-    $this->assertGuest();
-    $response->assertNoContent();
+    // Act: Attempt to logout
+    $response = $this->withHeader('Authorization', 'Bearer ' . $token)
+        ->postJson(route('logout'));
+
+    // Assert: Check logout response
+    $response->assertStatus(200)
+        ->assertJson(['message' => 'Logged out successfully']);
+});
+
+it('fails to logout when unauthenticated', function () {
+    // Act: Attempt to logout without a valid token
+    $response = $this->postJson(route('logout'));
+
+    // Assert: Check error response
+    $response->assertStatus(401);
 });

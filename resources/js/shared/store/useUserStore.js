@@ -9,25 +9,30 @@ export const useUserStore = defineStore(
 
         const isLoggedIn = ref(false);
         const user = ref({});
-        const getSession = () => {
-            return new Promise((resolve, reject) => {
-                ApiService.get(`api/user`)
-                    .then(async (res) => {
-                        user.value = res.data;
-                        isLoggedIn.value = true;
-                        resolve(res);
-                    })
-                    .catch((err) => {
-                        router.push({
-                            name: 'login'
-                        });
-                        isLoggedIn.value = false;
-                        reject(err);
+        const token = ref('');
+        const getSession = async () => {
+            await sanctumCsrf();
+            await ApiService.get(`api/user`)
+                .then(async (res) => {
+                    user.value = res.data;
+                    isLoggedIn.value = true;
+                })
+                .catch((err) => {
+                    router.push({
+                        name: 'login'
                     });
+                    isLoggedIn.value = false;
+                });
+        };
+
+        const sanctumCsrf = async () => {
+            await fetch(`sanctum/csrf-cookie`, {
+                credentials: 'include'
             });
         };
 
         return {
+            token,
             isLoggedIn,
             // function
             getSession

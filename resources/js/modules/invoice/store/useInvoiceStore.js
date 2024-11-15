@@ -208,6 +208,6 @@ export const useInvoiceStore = defineStore(
         };
     },
     {
-        persist: true
+        persist: false
     }
 );
