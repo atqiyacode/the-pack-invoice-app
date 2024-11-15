@@ -60,7 +60,11 @@ This project involves creating an Invoice Management System with user authentica
     ```bash
     php artisan db:seed
     ```
-9. **Run Composer Dev**
+9. **Run Unit Tes**
+    ```bash
+    php artisan test
+    ```
+10. **Run Composer Dev**
     ```bash
     composer dev
     ```
