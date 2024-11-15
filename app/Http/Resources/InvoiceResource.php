@@ -27,17 +27,17 @@ class InvoiceResource extends JsonResource
             'client_address' => $this->client_address,
             'remarks' => $this->remarks,
 
-            'subtotal' => $this->subtotal,
+            'subtotal' => (float) $this->subtotal,
 
-            'discount' => $this->discount,
-            'discount_amount' => $this->discount_amount,
+            'discount' => (float) $this->discount,
+            'discount_amount' => (float) $this->discount_amount,
 
-            'gst' => $this->gst,
-            'gst_amount' => $this->gst_amount,
+            'gst' => (float) $this->gst,
+            'gst_amount' => (float) $this->gst_amount,
 
-            'grand_total' => $this->grand_total,
+            'grand_total' => (float) $this->grand_total,
 
-            'items_count' => $this->items_count,
+            'items_count' => (float) $this->items_count,
 
             'items' => $this->when(
                 request()->routeIs('invoices.*'),

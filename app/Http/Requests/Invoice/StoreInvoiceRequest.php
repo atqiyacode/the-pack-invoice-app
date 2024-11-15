@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests\Invoice;
 
+use Carbon\Carbon;
 use Illuminate\Foundation\Http\FormRequest;
 
 class StoreInvoiceRequest extends FormRequest
@@ -41,5 +42,20 @@ class StoreInvoiceRequest extends FormRequest
             'items.*.item_price' => 'required|numeric',
             'items.*.item_amount' => 'required|numeric'
         ];
+    }
+
+    /**
+     * Prepare the data for validation.
+     *
+     * @return void
+     */
+    protected function prepareForValidation()
+    {
+        // Format the invoice_date to Y-m-d
+        if ($this->has('invoice_date')) {
+            $this->merge([
+                'invoice_date' => Carbon::parse($this->invoice_date)->format('Y-m-d')
+            ]);
+        }
     }
 }

@@ -17,10 +17,13 @@ class InvoiceFactory extends Factory
     public function definition(): array
     {
         $subtotal = fake()->numberBetween(100, 10000);
-        $gst_amount = $subtotal * (env('GST_AMOUNT') / 100);
-        $discount = fake()->numberBetween(0, 100) / 100;
 
-        $discount_amount = $subtotal * $discount;
+        $discount = fake()->numberBetween(0, 100);
+
+        $discount_amount = $subtotal * $discount / 100;
+
+        $gst_amount = ($subtotal - $discount_amount) * (env('GST_AMOUNT') / 100);
+
         return [
             'invoice_date' => fake()->date('Y-m-d', now()),
             'client_name' => fake()->name(),

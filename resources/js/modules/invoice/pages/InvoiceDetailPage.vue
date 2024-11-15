@@ -88,11 +88,11 @@ onMounted(() => {
                         <Column :footer="`${formatCurrency(detailInvoice.subtotal)}`" />
                     </Row>
                     <Row>
-                        <Column :footer="`Discount (${detailInvoice.discount_amount}%):`" :colspan="3" footerStyle="text-align:right" />
-                        <Column :footer="`${formatCurrency((detailInvoice.discount_amount / 100) * detailInvoice.subtotal)}`" />
+                        <Column :footer="`Discount (${detailInvoice.discount}%):`" :colspan="3" footerStyle="text-align:right" />
+                        <Column :footer="`${formatCurrency(detailInvoice.discount_amount)}`" />
                     </Row>
                     <Row>
-                        <Column :footer="`GST Amount (${gstTax}%):`" :colspan="3" footerStyle="text-align:right" />
+                        <Column :footer="`GST Amount (${detailInvoice.gst}%):`" :colspan="3" footerStyle="text-align:right" />
                         <Column :footer="`${formatCurrency(detailInvoice.gst_amount)}`" />
                     </Row>
                     <Row>

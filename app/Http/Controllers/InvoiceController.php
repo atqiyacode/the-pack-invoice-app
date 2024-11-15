@@ -31,6 +31,9 @@ class InvoiceController extends Controller
      */
     public function store(StoreInvoiceRequest $request)
     {
+        $request->merge([
+            'gst' => env('GST_AMOUNT', 9)
+        ]);
         $invoice = new Invoice($request->all());
         $invoice->save();
 

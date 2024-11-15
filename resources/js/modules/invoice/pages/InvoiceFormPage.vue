@@ -34,6 +34,7 @@ const rules = {
     client_name: { required },
     client_address: { required },
     remarks: {},
+    discount: { numeric },
     discount_amount: { numeric },
     subtotal: { required, numeric },
     gst_amount: { required, numeric },
@@ -51,6 +52,7 @@ onMounted(() => {
             client_name: null,
             client_address: null,
             remarks: null,
+            discount: 0,
             discount_amount: 0,
             subtotal: 0,
             gst_amount: 0,
@@ -76,6 +78,7 @@ const getSubtotal = (items) => {
 
 const getDiscountAmount = (discount) => {
     discountTotal.value = (discount / 100) * subtotal.value;
+    form.value.discount_amount = discountTotal.value;
     return discountTotal.value;
 };
 
@@ -92,7 +95,7 @@ const getGrandTotal = () => {
 };
 
 const updateDiscount = () => {
-    discountTotal.value = (form.value.discount_amount / 100) * subtotal.value;
+    discountTotal.value = (form.value.discount / 100) * subtotal.value;
     getGstAmount();
 };
 
@@ -165,8 +168,8 @@ const deleteItem = (data) => {
                         </div>
                         <div class="flex-auto">
                             <label class="font-bold block mb-2" for="discount">discount</label>
-                            <InputNumber suffix="%" @blur="v$.discount_amount.$touch()" :invalid="errors.discount_amount || v$.discount_amount.$error" v-model="form.discount_amount" :min="0" :max="100" fluid @keypress="updateDiscount" />
-                            <Message size="small" severity="error" variant="simple">{{ errors.discount_amount ? errors.discount_amount[0] : '' }}</Message>
+                            <InputNumber suffix="%" @blur="v$.discount.$touch()" :invalid="errors.discount || v$.discount.$error" v-model="form.discount" :min="0" :max="100" fluid @keypress="updateDiscount" />
+                            <Message size="small" severity="error" variant="simple">{{ errors.discount ? errors.discount[0] : '' }}</Message>
                         </div>
                     </div>
                 </div>
@@ -214,8 +217,8 @@ const deleteItem = (data) => {
                     <Column :footer="`${formatCurrency(getSubtotal(form.items))}`" />
                 </Row>
                 <Row>
-                    <Column :footer="`Discount (${form.discount_amount}%):`" :colspan="4" footerStyle="text-align:right" />
-                    <Column :footer="`${formatCurrency(getDiscountAmount(form.discount_amount))}`" />
+                    <Column :footer="`Discount (${form.discount}%):`" :colspan="4" footerStyle="text-align:right" />
+                    <Column :footer="`${formatCurrency(getDiscountAmount(form.discount))}`" />
                 </Row>
                 <Row>
                     <Column :footer="`GST Amount (${gstTax}%):`" :colspan="4" footerStyle="text-align:right" />

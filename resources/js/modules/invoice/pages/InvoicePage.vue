@@ -55,12 +55,12 @@ const showTemplate = () => {
             <Column field="invoice_number" header="No. Invoice"></Column>
             <Column field="invoice_date_formatted" header="Date"></Column>
             <Column field="client_name" header="Client Name"></Column>
-            <Column field="discount_amount" header="Disc. Perc">
-                <template #body="slotProps"> {{ slotProps.data.discount_amount }}% </template>
+            <Column field="discount" header="Disc. Perc">
+                <template #body="slotProps"> {{ slotProps.data.discount }}% </template>
             </Column>
             <Column field="discount_amount" header="Disc. Amount">
                 <template #body="slotProps">
-                    {{ formatCurrency(slotProps.data.subtotal * (slotProps.data.discount_amount / 100)) }}
+                    {{ formatCurrency(slotProps.data.discount_amount) }}
                 </template>
             </Column>
             <Column field="items_count" header="Items"></Column>
