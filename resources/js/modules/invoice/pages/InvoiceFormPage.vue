@@ -15,7 +15,7 @@ const InvoiceStore = useInvoiceStore();
 const { loading, errors } = storeToRefs(GlobalStore);
 const { form, detailInvoice } = storeToRefs(InvoiceStore);
 
-const { getById, store, update } = InvoiceStore;
+const { getById, store, update, formatCurrency } = InvoiceStore;
 
 const subtotal = ref(0);
 const discountTotal = ref(0);
@@ -94,14 +94,6 @@ const getGrandTotal = () => {
 const updateDiscount = () => {
     discountTotal.value = (form.value.discount_amount / 100) * subtotal.value;
     getGstAmount();
-};
-
-const formatCurrency = (value) => {
-    return `${new Intl.NumberFormat('us-US', {
-        style: 'currency',
-        currency: 'USD',
-        maximumFractionDigits: 2
-    }).format(value)}`;
 };
 
 const addItem = () => {

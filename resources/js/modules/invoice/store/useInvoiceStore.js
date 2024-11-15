@@ -180,6 +180,14 @@ export const useInvoiceStore = defineStore(
             });
         };
 
+        const formatCurrency = (value) => {
+            return `${new Intl.NumberFormat('us-US', {
+                style: 'currency',
+                currency: 'USD',
+                maximumFractionDigits: 2
+            }).format(value)}`;
+        };
+
         return {
             keyword,
             invoices,
@@ -204,7 +212,8 @@ export const useInvoiceStore = defineStore(
             //
             onDelete,
             hideDialog,
-            onChangePage
+            onChangePage,
+            formatCurrency
         };
     },
     {

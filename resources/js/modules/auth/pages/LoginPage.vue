@@ -58,7 +58,7 @@ const v$ = useVuelidate(rules, form);
                             <Message size="small" severity="error" variant="simple">{{ errors.email ? errors.email[0] : '' }}</Message>
                         </div>
                         <div class="flex flex-col gap-2 mb-4">
-                            <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password (pass: password)</label>
+                            <label for="password1" class="block text-surface-900 dark:text-surface-0 font-medium text-xl mb-2">Password</label>
                             <Password id="password1" v-model="form.password" placeholder="Password" :toggleMask="true" fluid :feedback="false" :invalid="errors.password || v$.password.$error"></Password>
                             <Message size="small" severity="error" variant="simple">{{ errors.password ? errors.password[0] : '' }}</Message>
                         </div>

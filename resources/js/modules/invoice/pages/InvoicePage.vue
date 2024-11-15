@@ -11,7 +11,7 @@ const { loading } = storeToRefs(GlobalStore);
 
 const { meta, invoices, detailInvoice, deleteDialog, keyword, rowsPerPageOptions } = storeToRefs(InvoiceStore);
 
-const { loadData, onDelete, hideDialog, onChangePage, destroy } = InvoiceStore;
+const { loadData, onDelete, hideDialog, onChangePage, destroy, formatCurrency } = InvoiceStore;
 
 onBeforeMount(() => {
     keyword.value = '';
@@ -47,25 +47,42 @@ const showTemplate = () => {
             </template>
         </Toolbar>
 
-        <DataTable :loading="loading" showGridlines stripedRows :value="invoices">
+        <DataTable resizableColumns scrollable columnResizeMode="fit" size="small" stripedRows :value="invoices">
             <template #empty>
-                <div class="flex flex-column md:flex-row md:justify-content-center md:align-items-center mb-3">
-                    <h5 class="m-0 text-red-600">Data Not Found</h5>
-                </div>
+                <h1 class="text-center font-bold text-red-500">Data Not Found</h1>
             </template>
 
-            <Column field="invoice_number" header="invoice_number"></Column>
-            <Column field="invoice_date_formatted" header="invoice_date_formatted"></Column>
-            <Column field="client_name" header="client_name"></Column>
-            <Column field="items_count" header="items_count"></Column>
-            <Column field="subtotal" header="subtotal"></Column>
-            <Column field="grand_total" header="grand_total"></Column>
-
-            <Column :exportable="false" header="Action">
+            <Column field="invoice_number" header="No. Invoice"></Column>
+            <Column field="invoice_date_formatted" header="Date"></Column>
+            <Column field="client_name" header="Client Name"></Column>
+            <Column field="discount_amount" header="Disc. Perc">
+                <template #body="slotProps"> {{ slotProps.data.discount_amount }}% </template>
+            </Column>
+            <Column field="discount_amount" header="Disc. Amount">
                 <template #body="slotProps">
-                    <Button icon="pi pi-eye" outlined rounded severity="info" class="mr-2" @click="$router.push({ name: 'invoice-detail', params: { id: slotProps.data.id } })" />
-                    <!-- <Button icon="pi pi-pencil" outlined rounded severity="warn" class="mr-2" @click="$router.push({ name: 'invoice-edit', params: { id: slotProps.data.id } })" /> -->
-                    <Button icon="pi pi-trash" outlined rounded severity="danger" @click="onDelete(slotProps.data)" />
+                    {{ formatCurrency(slotProps.data.subtotal * (slotProps.data.discount_amount / 100)) }}
+                </template>
+            </Column>
+            <Column field="items_count" header="Items"></Column>
+            <Column field="subtotal" header="Subtotal">
+                <template #body="slotProps">
+                    {{ formatCurrency(slotProps.data.subtotal) }}
+                </template>
+            </Column>
+            <Column field="grand_total" header="Grand Total">
+                <template #body="slotProps">
+                    {{ formatCurrency(slotProps.data.grand_total) }}
+                </template>
+            </Column>
+
+            <Column alignFrozen="right" :frozen="true">
+                <template #header>
+                    <p class="text-center">Action</p>
+                </template>
+                <template #body="slotProps">
+                    <Button size="small" icon="pi pi-eye" outlined rounded severity="info" class="mr-1" @click="$router.push({ name: 'invoice-detail', params: { id: slotProps.data.id } })" />
+                    <Button size="small" icon="pi pi-pencil" outlined rounded severity="warn" class="mr-1" @click="$router.push({ name: 'invoice-edit', params: { id: slotProps.data.id } })" />
+                    <Button size="small" icon="pi pi-trash" outlined rounded severity="danger" @click="onDelete(slotProps.data)" />
                 </template>
             </Column>
         </DataTable>

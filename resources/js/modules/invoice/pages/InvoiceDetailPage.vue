@@ -8,7 +8,7 @@ const InvoiceStore = useInvoiceStore();
 
 const { detailInvoice } = storeToRefs(InvoiceStore);
 
-const { getById, downloadPdf } = InvoiceStore;
+const { getById, downloadPdf, formatCurrency } = InvoiceStore;
 
 const route = useRoute();
 const gstTax = 9;
@@ -16,14 +16,6 @@ const gstTax = 9;
 onMounted(() => {
     getById(route.params.id);
 });
-
-const formatCurrency = (value) => {
-    return `${new Intl.NumberFormat('us-US', {
-        style: 'currency',
-        currency: 'USD',
-        maximumFractionDigits: 2
-    }).format(value)}`;
-};
 </script>
 
 <template>
