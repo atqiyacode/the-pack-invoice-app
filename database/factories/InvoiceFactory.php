@@ -18,18 +18,20 @@ class InvoiceFactory extends Factory
     {
         $subtotal = fake()->numberBetween(100, 10000);
         $gst_amount = $subtotal * (env('GST_AMOUNT') / 100);
-        $discount_amount = fake()->numberBetween(0, 100) / 100;
+        $discount = fake()->numberBetween(0, 100) / 100;
 
-        $discount_subtotal = $subtotal * $discount_amount;
+        $discount_amount = $subtotal * $discount;
         return [
             'invoice_date' => fake()->date('Y-m-d', now()),
             'client_name' => fake()->name(),
             'client_address' => fake()->address(),
             'remarks' => fake()->realText(),
-            'discount_amount' => $discount_amount,
             'subtotal' => $subtotal,
+            'discount' => $discount,
+            'discount_amount' => $discount_amount,
+            'gst' => env('GST_AMOUNT', 9),
             'gst_amount' => $gst_amount,
-            'grand_total' => ($subtotal - $discount_subtotal) + $gst_amount,
+            'grand_total' => ($subtotal - $discount_amount) + $gst_amount,
         ];
     }
 }

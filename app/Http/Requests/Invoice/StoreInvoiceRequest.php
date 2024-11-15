@@ -26,10 +26,15 @@ class StoreInvoiceRequest extends FormRequest
             'client_name' => 'required|string',
             'client_address' => 'required|string',
             'remarks' => 'nullable|string',
-            'discount_amount' => 'nullable|numeric|min:0|max:100',
+
             'subtotal' => 'required|numeric',
+
+            'discount' => 'nullable|numeric|min:0|max:100',
+
             'gst_amount' => 'required|numeric',
+
             'grand_total' => 'required|numeric',
+
             'items' => 'required|array',
             'items.*.item_name' => 'required|string|max:255',
             'items.*.item_quantity' => 'required|integer',

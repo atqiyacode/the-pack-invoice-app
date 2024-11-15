@@ -26,9 +26,15 @@ class InvoiceResource extends JsonResource
             'client_name' => $this->client_name,
             'client_address' => $this->client_address,
             'remarks' => $this->remarks,
-            'discount_amount' => $this->discount_amount,
+
             'subtotal' => $this->subtotal,
+
+            'discount' => $this->discount,
+            'discount_amount' => $this->discount_amount,
+
+            'gst' => $this->gst,
             'gst_amount' => $this->gst_amount,
+
             'grand_total' => $this->grand_total,
 
             'items_count' => $this->items_count,

@@ -36,6 +36,9 @@ class Invoice extends Model
         'subtotal',
         'gst_amount',
         'grand_total',
+
+        'discount',
+        'gst',
     ];
 
     protected $casts = [
