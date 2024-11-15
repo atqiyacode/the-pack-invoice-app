@@ -109,8 +109,12 @@
 
     <div class="total-summary">
         <p><strong>Subtotal:</strong> ${{ number_format($invoice['subtotal'], 2) }}</p>
-        <p><strong>Discount:</strong> ${{ number_format($invoice['discount_amount'], 2) }}</p>
-        <p><strong>GST (9%):</strong> ${{ number_format($invoice['gst_amount'], 2) }}</p>
+        <p>
+            <strong>Discount ({{ number_format($invoice['discount_amount'], 2) }}%):</strong>
+            ${{ number_format(($invoice['discount_amount'] / 100) * $invoice['subtotal'], 2) }}
+        </p>
+        <p><strong>GST ({{ config(env('GST_AMOUNT', '9')) }}%):</strong>
+            ${{ number_format($invoice['gst_amount'], 2) }}</p>
         <p><strong>Grand Total:</strong> ${{ number_format($invoice['grand_total'], 2) }}</p>
     </div>
 </body>
