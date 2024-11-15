@@ -11,7 +11,7 @@ const InvoiceRouter = [
     {
         path: '/invoice/create',
         name: 'invoice-create',
-        component: () => import('../pages/InvoiceCreatePage.vue'),
+        component: () => import('../pages/InvoiceFormPage.vue'),
         meta: {
             title: 'invoice-create',
             requiresAuth: true
@@ -29,7 +29,7 @@ const InvoiceRouter = [
     {
         path: '/invoice/edit/:id',
         name: 'invoice-edit',
-        component: () => import('../pages/InvoiceEditPage.vue'),
+        component: () => import('../pages/InvoiceFormPage.vue'),
         meta: {
             title: 'invoice-edit',
             requiresAuth: true

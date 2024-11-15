@@ -80,6 +80,10 @@ export const useInvoiceStore = defineStore(
                     .then(async (res) => {
                         detailInvoice.value = res.data;
                         form.value = res.data;
+
+                        const date = new Date(form.value.invoice_date);
+                        form.value.invoice_date = date;
+
                         resolve(res);
                     })
                     .catch((err) => {
@@ -109,6 +113,13 @@ export const useInvoiceStore = defineStore(
         };
 
         const update = () => {
+            const date = new Date(form.value.invoice_date);
+            const year = date.getFullYear().toString();
+            const month = ('0' + (date.getMonth() + 1)).slice(-2);
+            const day = ('0' + date.getDate()).slice(-2);
+
+            const formattedDate = `${year}-${month}-${day}`;
+            console.log(formattedDate);
             return new Promise((resolve, reject) => {
                 ApiService.put(`api/invoices/${form.value.id}`, form.value)
                     .then(async (res) => {
@@ -118,8 +129,8 @@ export const useInvoiceStore = defineStore(
                             page: page.value,
                             per_page: per_page.value
                         });
-                        hideDialog();
-                        router.push({ name: 'invoice' });
+                        // hideDialog();
+                        // router.push({ name: 'invoice' });
                         resolve(res);
                     })
                     .catch((err) => {
