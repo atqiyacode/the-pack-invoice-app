@@ -56,14 +56,17 @@ it('can create an invoice', function () {
     $user = User::factory()->create();
     Sanctum::actingAs($user);
 
+    $discount = 10;
     $payload = [
         'invoice_number' => 'INV24111501',
         'invoice_date' => '2024-11-15',
         'client_name' => 'John Doe',
         'client_address' => '123 Main St',
         'remarks' => 'Payment due in 30 days',
-        'discount_amount' => 10,
+        'discount' => $discount,
+        'discount_amount' => ($discount / 100) * 1000,
         'subtotal' => 1000,
+        'gst_amount' => env('GST_AMOUNT', 9),
         'gst_amount' => 90,
         'grand_total' => 990,
         'items' => [
