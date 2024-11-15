@@ -18,8 +18,11 @@ class InvoiceResource extends JsonResource
         return [
             'id' => $this->id,
             'invoice_number' => $this->invoice_number,
+
             'invoice_date' => $this->invoice_date,
-            'invoice_date_formatted' => Carbon::parse($this->invoice_date)->isoFormat('LLL'),
+
+            'invoice_date_formatted' => Carbon::parse($this->invoice_date)->setTimezone(config('app.timezone'))->isoFormat('LL'),
+
             'client_name' => $this->client_name,
             'client_address' => $this->client_address,
             'remarks' => $this->remarks,

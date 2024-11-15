@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Events\InvoiceEvent;
 use App\Models\Invoice;
+use Illuminate\Support\Facades\Log;
 
 class InvoiceObserver
 {
@@ -11,8 +12,9 @@ class InvoiceObserver
      * Dispatch events and log activities when the Invoice is created, updated, deleted, restored, or force deleted.
      *
      */
-    protected function handleEventAndLogActivity(Invoice $data): void
+    protected function handleEventAndLogActivity($data): void
     {
+        Log::info($data);
         InvoiceEvent::dispatch($data);
         //
     }

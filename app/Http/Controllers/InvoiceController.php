@@ -6,7 +6,9 @@ use App\Http\Requests\Invoice\StoreInvoiceRequest;
 use App\Http\Requests\Invoice\UpdateInvoiceRequest;
 use App\Http\Resources\InvoiceResource;
 use App\Models\Invoice;
+use App\Models\InvoiceItem;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 
 class InvoiceController extends Controller
 {
@@ -16,7 +18,7 @@ class InvoiceController extends Controller
     public function index(Request $request)
     {
         $request->merge([
-            'sorts' => '-invoice_date'
+            'sorts' => '-invoice_number'
         ]);
         $invoices = Invoice::with(['items'])->withCount(['items'])->useFilters()->dynamicPaginate();
         return InvoiceResource::collection($invoices);
@@ -27,8 +29,24 @@ class InvoiceController extends Controller
      */
     public function store(StoreInvoiceRequest $request)
     {
-        $invoice = new Invoice();
-        $invoice->create($request->all());
+        $invoice = new Invoice($request->all());
+        $invoice->save();
+
+        // collect items
+        $items = collect($request->items)->map(function ($item) use ($invoice) {
+            $data = [
+                'invoice_id' => $invoice->id,
+                'item_name' => $item['item_name'],
+                'item_quantity' => $item['item_quantity'],
+                'item_price' => $item['item_price'],
+                'item_amount' => $item['item_amount']
+            ];
+            return new InvoiceItem($data);
+        });
+
+        // save many items relation
+        $invoice->items()->saveMany($items);
+
         return $this->respondWithSuccess($invoice);
     }
 
@@ -48,6 +66,22 @@ class InvoiceController extends Controller
     public function update(UpdateInvoiceRequest $request, Invoice $invoice)
     {
         $invoice->update($request->all());
+
+        // collect items
+        $items = collect($request->items)->map(function ($item) use ($invoice) {
+            return [
+                'id' => $item['id'] ?? null, // Gunakan ID jika tersedia
+                'invoice_id' => $invoice->id,
+                'item_name' => $item['item_name'],
+                'item_quantity' => $item['item_quantity'],
+                'item_price' => $item['item_price'],
+                'item_amount' => $item['item_amount']
+            ];
+        })->toArray();
+
+        // Invoice items `upsert`
+        InvoiceItem::upsert($items, ['id'], ['item_name', 'item_quantity', 'item_price', 'item_amount']);
+
         $result = new InvoiceResource($invoice);
         return $this->respondWithSuccess($result);
     }

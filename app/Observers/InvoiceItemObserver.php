@@ -11,7 +11,7 @@ class InvoiceItemObserver
      * Dispatch events and log activities when the Invoice Item is created, updated, deleted, restored, or force deleted.
      *
      */
-    protected function handleEventAndLogActivity(InvoiceItem $data): void
+    protected function handleEventAndLogActivity($data): void
     {
         InvoiceItemEvent::dispatch($data);
         //

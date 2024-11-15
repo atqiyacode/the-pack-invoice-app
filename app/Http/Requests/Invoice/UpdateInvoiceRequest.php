@@ -26,10 +26,15 @@ class UpdateInvoiceRequest extends FormRequest
             'client_name' => 'sometimes|string',
             'client_address' => 'sometimes|string',
             'remarks' => 'nullable|string',
-            'discount_amount' => 'nullable|numeric|decimal:0,1',
+            'discount_amount' => 'nullable|numeric|min:0|max:100',
             'subtotal' => 'sometimes|numeric',
             'gst_amount' => 'sometimes|numeric',
             'grand_total' => 'sometimes|numeric',
+            'items' => 'required|array',
+            'items.*.item_name' => 'required|string|max:255',
+            'items.*.item_quantity' => 'required|integer',
+            'items.*.item_price' => 'required|numeric',
+            'items.*.item_amount' => 'required|numeric'
         ];
     }
 }
